@@ -1,11 +1,15 @@
 import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
+import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
-  build: { outDir: "./app/build" },
   preview: {
-    port: 8081,
+    port: 8000,
   },
-  plugins: [remix({ ignoredRouteFiles: ["**/*.css"] }), tsconfigPaths()],
+  plugins: [
+    remix({ ignoredRouteFiles: ["**/*.css"] }),
+    tsconfigPaths(),
+    visualizer({ emitFile: true }),
+  ],
 });
