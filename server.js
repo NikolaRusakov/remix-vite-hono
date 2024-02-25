@@ -5,20 +5,25 @@ import { serveStatic } from "@hono/node-server/serve-static";
 
 const app = new Hono();
 
+if (process.env.NODE_ENV === "production")
+  app.route("/", (await import("./server.routes.js")).default);
+
 const viteDevServer =
   process.env.NODE_ENV === "production"
     ? undefined
     : await import("vite").then((vite) =>
         vite.createServer({
-          server: { middlewareMode: true },
+          server: {
+            middlewareMode: true,
+            // middlewareMode: { server: app },
+            // appType: "custom"
+          },
         })
       );
-
 const build = viteDevServer
   ? () => viteDevServer.ssrLoadModule("virtual:remix/server-build")
   : await import("./build/server/index.js");
 
-app.get("/api", (c) => c.text("Hono!"));
 // handle asset requests
 if (viteDevServer) {
   app.use(viteDevServer.middlewares);
@@ -29,25 +34,27 @@ if (viteDevServer) {
     "/assets/*",
     serveStatic({
       root: "./build/client/assets",
-      // mimes: {
-      //   m3u8: 'application/vnd.apple.mpegurl',
-      //   ts: 'video/mp2t',
-      // }
     })
+    // cache({
+    //   cacheName: "client-build-assets",
+    //   cacheControl: "max-age=1y",
+    // })
   );
   // app.use(
-  //   "/assets",
-  //   express.static("build/client/assets", { immutable: true, maxAge: "1y" })
+  //   "/*",
+  //   serveStatic({ root: "./build/client" })
+  //   // cache({
+  //   //   cacheName: "client-build",
+  //   //   cacheControl: "max-age=1h",
+  //   // })
   // );
 }
-
 app.use("/*", serveStatic({ root: "./build/client" }));
-
-// app.use(express.static("build/client", { maxAge: "1h" }));
 
 app.use("*", remix({ build, mode: process.env.NODE_ENV }));
 
 serve(app, (info) => {
-  console.log("lols");
   console.log(`Listening on http://localhost:${info.port}`); // Listening on http://localhost:3000
 });
+
+export default app;

@@ -32,3 +32,7 @@ If you're familiar with deploying Express applications you should be right at ho
 
 - `build/server`
 - `build/client`
+
+## Refs
+
+- Article on new remix+vite https://remix.run/blog/remix-vite-stable

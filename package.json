@@ -5,12 +5,13 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "build:profile":"remix vite:build --profile",
+    "build:profile": "remix vite:build --profile",
     "dev:d": "remix dev --manual -c 'node ./server.js'",
     "dev": "remix vite:dev",
     "preview": "vite preview --outDir ./build/server --base /",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "cross-env NODE_ENV=production node ./server.js",
+    "start:d": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
   "dependencies": {
