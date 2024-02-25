@@ -3,5 +3,9 @@ import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-  plugins: [remix(), tsconfigPaths()],
+  build: { outDir: "./app/build" },
+  preview: {
+    port: 8081,
+  },
+  plugins: [remix({ ignoredRouteFiles: ["**/*.css"] }), tsconfigPaths()],
 });
